@@ -20,6 +20,9 @@ type User struct {
 	Usernames           []string `json:"active_usernames"`
 	StatusCustomEmojiID string   `json:"emoji_status_custom_emoji_id"`
 
+	// Bot API 9.3: True, if the user has topics enabled in private chats
+	HasTopicsEnabled bool `json:"has_topics_enabled"`
+
 	// Returns only in getMe
 	CanJoinGroups        bool `json:"can_join_groups"`
 	CanReadMessages      bool `json:"can_read_all_group_messages"`

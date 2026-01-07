@@ -300,6 +300,15 @@ func (b *Bot) Send(to Recipient, what interface{}, opts ...interface{}) (*Messag
 	}
 }
 
+func (b *Bot) SendMessageDraft(to Recipient, text string, opts ...interface{}) (*Message, error) {
+	if to == nil {
+		return nil, ErrBadRecipient
+	}
+
+	sendOpts := b.extractOptions(opts)
+	return b.sendMessageDraft(to, text, sendOpts)
+}
+
 // SendPaidMedia sends multiple instances of paid media as a single message.
 // To include the caption, make sure the first PaidInputtable of an album has it.
 func (b *Bot) SendPaidMedia(to Recipient, stars int, a PaidAlbum, opts ...interface{}) (*Message, error) {

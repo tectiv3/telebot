@@ -191,6 +191,21 @@ func (b *Bot) sendText(to Recipient, text string, opt *SendOptions) (*Message, e
 	return extractMessage(data)
 }
 
+func (b *Bot) sendMessageDraft(to Recipient, text string, opt *SendOptions) (*Message, error) {
+	params := map[string]string{
+		"chat_id": to.Recipient(),
+		"text":    text,
+	}
+	b.embedSendOptions(params, opt)
+
+	data, err := b.Raw("sendMessageDraft", params)
+	if err != nil {
+		return nil, err
+	}
+
+	return extractMessage(data)
+}
+
 func (b *Bot) sendMedia(media Media, params map[string]string, files map[string]File) (*Message, error) {
 	kind := media.MediaType()
 	what := "send" + strings.Title(kind)
