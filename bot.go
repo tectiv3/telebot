@@ -643,6 +643,10 @@ func (b *Bot) Edit(msg Editable, what interface{}, opts ...interface{}) (*Messag
 	case string:
 		method = "editMessageText"
 		params["text"] = v
+	case InputRichMessage:
+		method = "editMessageText"
+		richMsg, _ := json.Marshal(v)
+		params["rich_message"] = string(richMsg)
 	case Location:
 		method = "editMessageLiveLocation"
 		params["latitude"] = fmt.Sprintf("%f", v.Lat)
