@@ -85,6 +85,8 @@ type API interface {
 	Send(to Recipient, what interface{}, opts ...interface{}) (*Message, error)
 	SendAlbum(to Recipient, a Album, opts ...interface{}) ([]Message, error)
 	SendDraft(to Recipient, draftID int, text string, opts ...interface{}) error
+	SendRichMessage(to Recipient, msg InputRichMessage, opts ...interface{}) (*Message, error)
+	SendRichMessageDraft(to Recipient, draftID int, msg InputRichMessage, threadID ...int) error
 	SendPaidMedia(to Recipient, stars int, a PaidAlbum, opts ...interface{}) (*Message, error)
 	SendGift(to Recipient, giftID string, opts ...interface{}) error
 	SavePreparedInlineMessage(user Recipient, result Result, opts ...interface{}) (*PreparedInlineMessage, error)

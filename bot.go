@@ -337,6 +337,57 @@ func (b *Bot) SendDraft(to Recipient, draftID int, text string, opts ...interfac
 	return err
 }
 
+// SendRichMessage sends a rich formatted message. If the message contains a
+// block with a media element, the bot must have the right to send the media.
+// On success, the sent Message is returned.
+func (b *Bot) SendRichMessage(to Recipient, msg InputRichMessage, opts ...interface{}) (*Message, error) {
+	if to == nil {
+		return nil, ErrBadRecipient
+	}
+
+	sendOpts := b.extractOptions(opts)
+
+	params := map[string]string{
+		"chat_id": to.Recipient(),
+	}
+
+	richMsg, _ := json.Marshal(msg)
+	params["rich_message"] = string(richMsg)
+
+	b.embedSendOptions(params, sendOpts)
+
+	data, err := b.Raw("sendRichMessage", params)
+	if err != nil {
+		return nil, err
+	}
+	return extractMessage(data)
+}
+
+// SendRichMessageDraft streams a partial rich message to a user while it is
+// being generated. The draft is ephemeral (30-second preview) — call
+// SendRichMessage with the complete message to persist it.
+// draftID must be non-zero; updates with the same identifier are animated.
+func (b *Bot) SendRichMessageDraft(to Recipient, draftID int, msg InputRichMessage, threadID ...int) error {
+	if to == nil {
+		return ErrBadRecipient
+	}
+
+	params := map[string]string{
+		"chat_id":  to.Recipient(),
+		"draft_id": strconv.Itoa(draftID),
+	}
+
+	richMsg, _ := json.Marshal(msg)
+	params["rich_message"] = string(richMsg)
+
+	if len(threadID) > 0 {
+		params["message_thread_id"] = strconv.Itoa(threadID[0])
+	}
+
+	_, err := b.Raw("sendRichMessageDraft", params)
+	return err
+}
+
 // SendPaidMedia sends multiple instances of paid media as a single message.
 // To include the caption, make sure the first PaidInputtable of an album has it.
 func (b *Bot) SendPaidMedia(to Recipient, stars int, a PaidAlbum, opts ...interface{}) (*Message, error) {
