@@ -105,6 +105,9 @@ type Message struct {
 	// For a text message, the actual UTF-8 text of the message.
 	Text string `json:"text"`
 
+	// (Optional) Message is a rich formatted message.
+	RichMessage *RichMessage `json:"rich_message,omitempty"`
+
 	// For registered commands, will contain the string payload:
 	//
 	// Ex: `/command <payload>` or `/command@botname <payload>`
