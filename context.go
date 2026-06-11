@@ -118,6 +118,12 @@ type Context interface {
 	// See SendAlbum from bot.go.
 	SendAlbum(a Album, opts ...interface{}) error
 
+	// SendRichMessage sends a rich formatted message to the current recipient.
+	SendRichMessage(msg InputRichMessage, opts ...interface{}) error
+
+	// SendRichMessageDraft streams a partial rich message to the current recipient.
+	SendRichMessageDraft(draftID int, msg InputRichMessage) error
+
 	// Reply replies to the current message.
 	// See Reply from bot.go.
 	Reply(what interface{}, opts ...interface{}) error
@@ -487,6 +493,16 @@ func (c *nativeContext) SendAlbum(a Album, opts ...interface{}) error {
 
 	_, err := c.b.SendAlbum(c.Recipient(), a, opts...)
 	return err
+}
+
+func (c *nativeContext) SendRichMessage(msg InputRichMessage, opts ...interface{}) error {
+	opts = c.inheritOpts(opts...)
+	_, err := c.b.SendRichMessage(c.Recipient(), msg, opts...)
+	return err
+}
+
+func (c *nativeContext) SendRichMessageDraft(draftID int, msg InputRichMessage) error {
+	return c.b.SendRichMessageDraft(c.Recipient(), draftID, msg)
 }
 
 func (c *nativeContext) Reply(what interface{}, opts ...interface{}) error {
