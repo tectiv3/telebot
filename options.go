@@ -103,6 +103,9 @@ type SendOptions struct {
 	// AllowPaidBroadcast allows the message to be sent to users who have not yet
 	// unlocked access to paid channels. Only for messages sent to channels.
 	AllowPaidBroadcast bool
+
+	// RichMessage is the rich message content for sendRichMessage or editMessageText.
+	RichMessage *InputRichMessage
 }
 
 func (og *SendOptions) copy() *SendOptions {
@@ -162,6 +165,10 @@ func (b *Bot) extractOptions(how []interface{}) *SendOptions {
 			opts.ParseMode = opt
 		case Entities:
 			opts.Entities = opt
+		case InputRichMessage:
+			opts.RichMessage = &opt
+		case *InputRichMessage:
+			opts.RichMessage = opt
 		default:
 			panic("telebot: unsupported send-option")
 		}
@@ -234,6 +241,11 @@ func (b *Bot) embedSendOptions(params map[string]string, opt *SendOptions) {
 
 	if opt.AllowPaidBroadcast {
 		params["allow_paid_broadcast"] = "true"
+	}
+
+	if opt.RichMessage != nil {
+		richMsg, _ := json.Marshal(opt.RichMessage)
+		params["rich_message"] = string(richMsg)
 	}
 }
 
